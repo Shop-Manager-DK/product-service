@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### DATA Directory ###
+/data/*
+!/data/.gitignore
+
 ### STS ###
 .apt_generated
 .classpath
