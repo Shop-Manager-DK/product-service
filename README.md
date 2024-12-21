@@ -1,5 +1,5 @@
-    <h1>Product Service - Clothing Shop Microservice</h1>
-    <p>The <strong>Product Service</strong> is a microservice responsible for handling all product-related operations in the clothing shop application. It is a part of the larger e-commerce system and interacts with other services such as Order Service, Payment Service, and Inventory Service. The service is built using <strong>Spring Boot</strong> and is configured to interact with <strong>MongoDB</strong> for product data storage.</p>
+<h1>Product Service - Clothing Shop Microservice</h1> 
+<p>The <strong>Product Service</strong> is a microservice responsible for handling all product-related operations in the clothing shop application. It is a part of the larger e-commerce system and interacts with other services such as Order Service, Payment Service, and Inventory Service. The service is built using <strong>Spring Boot</strong> and is configured to interact with <strong>MongoDB</strong> for product data storage.</p>
 
     <h2>Features</h2>
     <ul>
