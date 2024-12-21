@@ -1,15 +1,15 @@
 <h1>Product Service - Clothing Shop Microservice</h1> 
 <p>The <strong>Product Service</strong> is a microservice responsible for handling all product-related operations in the clothing shop application. It is a part of the larger e-commerce system and interacts with other services such as Order Service, Payment Service, and Inventory Service. The service is built using <strong>Spring Boot</strong> and is configured to interact with <strong>MongoDB</strong> for product data storage.</p>
 
-    <h2>Features</h2>
-    <ul>
-        <li><strong>Product Management</strong>: Handle product CRUD (Create, Read, Update, Delete) operations.</li>
-        <li><strong>MongoDB Integration</strong>: Store product data using MongoDB.</li>
-        <li><strong>Error Handling</strong>: Utilize global exception handling with descriptive error messages.</li>
-        <li><strong>DTO Usage</strong>: Use Data Transfer Objects (DTOs) for API communication.</li>
-        <li><strong>Security</strong>: Basic security setup with JWT authentication.</li>
-        <li><strong>API Documentation</strong>: Swagger-based documentation for all exposed endpoints.</li>
-    </ul>
+h2>Features</h2>
+<ul>
+     <li><strong>Product Management</strong>: Handle product CRUD (Create, Read, Update, Delete) operations.</li>
+    <li><strong>MongoDB Integration</strong>: Store product data using MongoDB.</li>
+    <li><strong>Error Handling</strong>: Utilize global exception handling with descriptive error messages.</li>
+    <li><strong>DTO Usage</strong>: Use Data Transfer Objects (DTOs) for API communication.</li>
+    <li><strong>Security</strong>: Basic security setup with JWT authentication.</li>
+    <li><strong>API Documentation</strong>: Swagger-based documentation for all exposed endpoints.</li>
+</ul>
 
     <h2>Prerequisites</h2>
     <p>Before running the project, ensure you have the following software installed:</p>
