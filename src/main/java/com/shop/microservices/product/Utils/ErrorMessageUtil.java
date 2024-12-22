@@ -24,26 +24,29 @@ public class ErrorMessageUtil {
     }
 
     /**
-     * Fetches the error message corresponding to the given code and arguments.
-     * Supports dynamic message formatting (e.g., replacing placeholders).
+     * Fetches the error message corresponding to the given code and arguments,
+     * and includes the error code in the returned message.
      *
      * @param code The error message code to look up.
      * @param args The arguments to format the message (optional).
-     * @return The error message in the current locale.
+     * @return The formatted error message including the error code.
      */
     public String getErrorMessage(String code, Object[] args) {
-        return messageSource.getMessage(code, args, Locale.getDefault());
+        // Fetch the error message from the properties file
+        String message = messageSource.getMessage(code, args, Locale.getDefault());
+        // Format the message to include the error code
+        return String.format("%s: %s", code, message);
     }
 
     /**
-     * Fetches the error message corresponding to the given code.
-     * No arguments are passed for message formatting.
+     * Fetches the error message corresponding to the given code,
+     * and includes the error code in the returned message.
      *
      * @param code The error message code to look up.
-     * @return The error message in the current locale.
+     * @return The formatted error message including the error code.
      */
     public String getErrorMessage(String code) {
-        return messageSource.getMessage(code, null, Locale.getDefault());
+        return getErrorMessage(code, null);
     }
 
 }
