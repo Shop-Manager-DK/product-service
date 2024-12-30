@@ -1,6 +1,5 @@
 package com.shop.microservices.product.model;
 
-import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,14 +17,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ApiModel(description = "Represents a material used in the shop's products catalog.")
 public class Material {
 
     /**
      * Unique identifier for the material.
      */
     @Id
-    @Setter
     private UUID materialId;
 
     /**

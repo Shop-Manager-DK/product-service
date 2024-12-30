@@ -1,26 +1,31 @@
 package com.shop.microservices.product.model;
 
-import io.swagger.annotations.ApiModel;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
  * Represents a product category in the shop's catalog.
  * This class is mapped to the "category" collection in MongoDB.
- * The category contains details such as its name and description.
+ * The category contains details such as its name, description, and unique identifier.
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ApiModel(description = "Represents a category of products in the shop's catalog.")
+@Document(value = "category")
 public class Category {
 
     /**
      * Unique identifier for the category.
      */
+    @Id
+    @NotNull(message = "Category ID must not be null")
     private UUID categoryId;
 
     /**

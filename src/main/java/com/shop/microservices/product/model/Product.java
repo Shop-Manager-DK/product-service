@@ -3,8 +3,6 @@ package com.shop.microservices.product.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,15 +21,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ApiModel(description = "Represents a product in the shop's catalog.")
 public class Product {
 
     /**
      * Unique identifier for the product.
      */
     @Id
-    @Setter
-    @ApiModelProperty(notes = "Unique identifier for the product", required = true)
     private UUID id;
 
     /**
@@ -39,14 +34,12 @@ public class Product {
      * The name must not be blank.
      */
     @NotBlank(message = "Product name must not be blank")
-    @ApiModelProperty(notes = "The name of the product", required = true)
     private String name;
 
     /**
      * A detailed description of the product.
      * The description may be blank.
      */
-    @ApiModelProperty(notes = "A detailed description of the product", required = false)
     private String description;
 
     /**
@@ -55,7 +48,6 @@ public class Product {
      */
     @NotNull(message = "Product price must not be null")
     @DecimalMin(value = "0", message = "Price must be greater than 0")
-    @ApiModelProperty(notes = "The price of the product", required = true)
     private BigDecimal price;
 
     /**
