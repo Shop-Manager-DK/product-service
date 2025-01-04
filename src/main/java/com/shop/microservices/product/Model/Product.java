@@ -1,13 +1,14 @@
-package com.shop.microservices.product.model;
+package com.shop.microservices.product.Model;
 
+import com.shop.microservices.product.Exception.FieldValidationException;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.DecimalMin;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
  * The product contains details such as name, description, and price.
  */
 @Getter
+@Setter
 @Document(value = "product")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,9 +33,10 @@ public class Product {
 
     /**
      * The name of the product.
-     * The name must not be blank.
+     * The name must not be blank and must be unique in the collection.
      */
     @NotBlank(message = "Product name must not be blank")
+    @Indexed(unique = true, name = "unique_product_name")
     private String name;
 
     /**
@@ -44,21 +47,27 @@ public class Product {
 
     /**
      * The price of the product.
-     * Price must be greater than or equal to 0.01 to ensure it's a valid positive value.
+     * Price must be greater than 0.01 to ensure it's a valid positive value.
      */
     @NotNull(message = "Product price must not be null")
-    @DecimalMin(value = "0", message = "Price must be greater than 0")
+    @DecimalMin(value = "0.01", message = "Price must be greater than 0")
     private BigDecimal price;
 
     /**
-     * Custom setter for price to ensure that only positive values are allowed.
-     * @param price The price to set.
-     * @throws IllegalArgumentException if the price is zero or negative.
+     * Sets the price for the product, ensuring that only positive values are allowed.
+     * <p>
+     * This method validates that the provided price is a positive value and throws an exception if the price is
+     * zero or negative. It ensures that the price cannot be set to an invalid value.
+     * </p>
+     *
+     * @param price The price to set for the product. Must be a positive value.
+     * @throws FieldValidationException if the price is null, zero, or negative.
      */
-    public void setPrice(BigDecimal price) {
+    public void setPrice(BigDecimal price) throws FieldValidationException {
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Price must be greater than zero.");
+            throw new FieldValidationException("prod.error.3101", new Object[]{price});
         }
         this.price = price;
     }
+
 }

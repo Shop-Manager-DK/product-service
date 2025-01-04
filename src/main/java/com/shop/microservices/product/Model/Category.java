@@ -1,4 +1,4 @@
-package com.shop.microservices.product.model;
+package com.shop.microservices.product.Model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
