@@ -1,6 +1,6 @@
 package com.shop.microservices.product.Listener;
 
-import com.shop.microservices.product.model.Material;
+import com.shop.microservices.product.Model.Material;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
