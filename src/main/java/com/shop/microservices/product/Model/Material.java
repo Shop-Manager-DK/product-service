@@ -1,4 +1,4 @@
-package com.shop.microservices.product.model;
+package com.shop.microservices.product.Model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -13,6 +13,7 @@ import java.util.UUID;
  * The material contains details such as name and description.
  */
 @Getter
+@Setter
 @Document(value = "material")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +32,13 @@ public class Material {
      */
     @NotBlank(message = "Material name must not be blank")
     private String name;
+
+    /**
+     * The Type of the material.
+     * The Type must not be blank.
+     */
+    @NotBlank(message = "Material name must not be blank")
+    private String MaterialType;
 
     /**
      * A detailed description of the material.
