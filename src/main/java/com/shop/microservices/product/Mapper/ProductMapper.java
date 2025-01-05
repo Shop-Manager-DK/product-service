@@ -4,11 +4,13 @@ import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Model.Product;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper class responsible for transforming product-related data between DTOs and domain objects.
  * It uses ModelMapper to convert between the DTOs ({@link ProductRequestDTO}, {@link ProductResponseDTO}) and the {@link Product} entity.
  */
+@Component
 public class ProductMapper {
     // Instance of ModelMapper to handle object mapping
     private final ModelMapper modelMapper;
