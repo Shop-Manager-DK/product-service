@@ -65,7 +65,7 @@ public class Product {
      */
     public void setPrice(BigDecimal price) throws FieldValidationException {
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new FieldValidationException("prod.error.3101", new Object[]{price});
+            throw new FieldValidationException("prod.error.3103", new Object[]{price});
         }
         this.price = price;
     }
