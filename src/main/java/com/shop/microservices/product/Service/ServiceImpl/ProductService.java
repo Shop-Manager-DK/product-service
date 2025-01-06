@@ -4,10 +4,12 @@ import com.mongodb.MongoException;
 import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Exception.EntityCreationException;
+import com.shop.microservices.product.Exception.UniqueConstraintViolationException;
 import com.shop.microservices.product.Mapper.ProductMapper;
 import com.shop.microservices.product.Service.ServiceInterface.IProductService;
 import com.shop.microservices.product.Model.Product;
-import com.shop.microservices.product.repository.ProductRepository;
+import com.shop.microservices.product.Repository.ProductRepository;
+import com.shop.microservices.product.Utils.ProductValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,61 +29,60 @@ import java.util.UUID;
 @Slf4j
 public class ProductService implements IProductService {
 
-    // Injected ProductRepository to interact with the database
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ProductValidationUtil productValidationUtil;
 
     /**
-     * Constructor for ProductService class to inject dependencies via constructor injection.
-     * This constructor is used to initialize the ProductRepository instance, which is responsible
-     * for performing CRUD operations on the product collection in MongoDB and ProductMapper instance,
-     * which is responsible for performing mapping operation on the product entity.
+     * Constructs the {@link ProductService} class with the necessary dependencies.
+     * The constructor initializes the {@link ProductRepository}, {@link ProductMapper},
+     * and {@link ProductValidationUtil} to handle CRUD operations, entity mapping,
+     * and validation tasks respectively.
      *
-     * @param productRepository The repository used to interact with the MongoDB database for product data.
+     * @param productRepository     The repository to interact with the MongoDB database for product data.
+     * @param productMapper         The mapper to convert product entities to DTOs and vice versa.
+     * @param productValidationUtil Utility class for validating product data, including name uniqueness.
      */
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductValidationUtil productValidationUtil) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.productValidationUtil = productValidationUtil;
     }
 
     /**
-     * Creates a new product.
-     * This method validates the input, persists the product, and logs the action.
+     * Creates a new product by validating the product request, mapping it to a domain model,
+     * and saving it to the database. If successful, returns the saved product as a DTO.
      *
      * @param productRequest The DTO containing the product data.
      * @return The created Product entity, transformed to a DTO.
+     * @throws EntityCreationException If an error occurs during product creation.
      */
     @Override
     @Transactional
     public ProductResponseDTO createProduct(@Valid ProductRequestDTO productRequest) throws EntityCreationException {
         try {
-            log.info("Creating a new product with name: {}", productRequest.getName());
 
-            //Map DTO to domain model using the mapper
+            // Validate the product request for business rules
+            validateProductRequest(productRequest);
+
+            // Map the DTO to a domain model and save it to the repository
             Product product = productMapper.productRequestDTOToProduct(productRequest);
-
-            // Save the product to the repository
             Product savedProduct = productRepository.save(product);
+
             log.info("Product created with ID: {}", savedProduct.getId());
 
-            // Mapped the saved product back to a DTO using the mapper and return it
+            // Map the saved product back to a DTO and return it
             return productMapper.productToProductResponseDTO(savedProduct);
 
         } catch (MongoException ex) {
-            // Log detailed error information for MongoDB exception
             log.error("MongoDB error occurred while creating product. Error Message: {}, Product Request: {}",
                     ex.getMessage(), productRequest, ex);
-
-            // Throw a more specific exception with additional details
-            throw new MongoException("Failed to save product to the database.", ex);
+            throw new EntityCreationException("prod.error.3100", ex);
         } catch (Exception ex) {
-            // Log unexpected errors
             log.error("Unexpected error occurred while creating product. Error Message: {}, Product Request: {}",
                     ex.getMessage(), productRequest, ex);
-
-            // Throw a general exception for unexpected errors
-            throw new EntityCreationException("prod.error.3100", ex);
+            throw new EntityCreationException("prod.error.3101", ex);
         }
     }
 
@@ -102,6 +103,19 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(UUID productId) {
+        // Implement deletion logic
+    }
 
+    /**
+     * Validates the product request to ensure the product name is unique.
+     * If the name already exists in the database, a {@link UniqueConstraintViolationException} is thrown.
+     *
+     * @param productRequestDTO The {@link ProductRequestDTO} containing the product details, including the name.
+     * @throws UniqueConstraintViolationException If the product name is not unique, with the error code "prod.error.3102" and the field "name".
+     */
+    public void validateProductRequest(ProductRequestDTO productRequestDTO) throws UniqueConstraintViolationException {
+        if (productValidationUtil.isProductNameUnique(productRequestDTO.getName())) {
+            throw new UniqueConstraintViolationException("prod.error.3102", "name", productRequestDTO.getName());
+        }
     }
 }

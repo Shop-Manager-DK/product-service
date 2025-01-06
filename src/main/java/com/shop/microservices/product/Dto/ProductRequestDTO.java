@@ -1,5 +1,6 @@
 package com.shop.microservices.product.Dto;
 
+import com.shop.microservices.product.Exception.FieldValidationException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -67,9 +68,9 @@ public class ProductRequestDTO {
      * @param price The price to set.
      * @throws IllegalArgumentException if the price is less than or equal to 0.
      */
-    public void setPrice(BigDecimal price) {
+    public void setPrice(BigDecimal price) throws FieldValidationException {
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Price must be greater than zero.");
+            throw new FieldValidationException("prod.error.3103", new Object[]{price});
         }
         this.price = price;
     }

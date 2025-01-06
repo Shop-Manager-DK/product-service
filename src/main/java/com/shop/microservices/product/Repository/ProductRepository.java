@@ -1,4 +1,4 @@
-package com.shop.microservices.product.repository;
+package com.shop.microservices.product.Repository;
 
 import com.shop.microservices.product.Model.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -32,4 +32,12 @@ public interface ProductRepository extends MongoRepository<Product, UUID> {
      * @return A list of {@link Product} objects with price greater than or equal to the specified value.
      */
     List<Product> findByPriceGreaterThanEqual(BigDecimal price);
+
+    /**
+     * Checks if a product with the specified name exists in the repository.
+     *
+     * @param name The name of the product to check.
+     * @return {@code true} if a product with the specified name exists, {@code false} otherwise.
+     */
+    boolean existsByName(String name);
 }
