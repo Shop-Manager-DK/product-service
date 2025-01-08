@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Exception.EntityCreationException;
+import com.shop.microservices.product.Exception.ResourceNotFoundException;
 import com.shop.microservices.product.Exception.UniqueConstraintViolationException;
 import com.shop.microservices.product.Mapper.ProductMapper;
 import com.shop.microservices.product.Service.ServiceInterface.IProductService;
@@ -60,7 +61,7 @@ public class ProductService implements IProductService {
      */
     @Override
     @Transactional
-    public ProductResponseDTO createProduct(@Valid ProductRequestDTO productRequest) throws EntityCreationException {
+    public ProductResponseDTO createProduct(@Valid ProductRequestDTO productRequest){
         try {
 
             // Validate the product request for business rules
@@ -87,8 +88,27 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponseDTO> getAllProducts() {
-        return List.of();
+    public List<ProductResponseDTO> getAllProducts(){
+
+        try {
+            List<Product> allProducts = productRepository.findAll();
+            if(allProducts.isEmpty()){
+                throw new ResourceNotFoundException("prod.error.3104");
+            }
+
+            // Use the mapper to convert each Product to a ProductResponseDTO
+            return allProducts.stream()
+                    .map(productMapper::productToProductResponseDTO)
+                    .toList();
+        } catch (MongoException ex) {
+            log.error("MongoDB error occurred while retrieving products. Error Message: {}",
+                    ex.getMessage(), ex);
+            throw new EntityCreationException("prod.error.3100", ex);
+        } catch (Exception ex) {
+            log.error("Unexpected error occurred while retrieving product. Error Message: {}",
+                    ex.getMessage(), ex);
+            throw new EntityCreationException("prod.error.3101", ex);
+        }
     }
 
     @Override
@@ -113,7 +133,7 @@ public class ProductService implements IProductService {
      * @param productRequestDTO The {@link ProductRequestDTO} containing the product details, including the name.
      * @throws UniqueConstraintViolationException If the product name is not unique, with the error code "prod.error.3102" and the field "name".
      */
-    public void validateProductRequest(ProductRequestDTO productRequestDTO) throws UniqueConstraintViolationException {
+    public void validateProductRequest(ProductRequestDTO productRequestDTO){
         if (productValidationUtil.isProductNameUnique(productRequestDTO.getName())) {
             throw new UniqueConstraintViolationException("prod.error.3102", "name", productRequestDTO.getName());
         }
