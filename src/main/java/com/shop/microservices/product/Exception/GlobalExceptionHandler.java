@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
         response.put("details", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
         response.put("details", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -93,8 +93,26 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
         response.put("details", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * Exception handler for {@link ResourceNotFoundException}.
+     * This method captures the exception and constructs a user-friendly error response.
+     *
+     * @param ex The {@link ResourceNotFoundException} thrown when a requested resource is not found.
+     * @return A {@link ResponseEntity} containing the error response as a map with relevant details.
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 
     /**
      * Handles ApplicationException thrown for general application-specific errors.

@@ -63,7 +63,7 @@ public class Product {
      * @param price The price to set for the product. Must be a positive value.
      * @throws FieldValidationException if the price is null, zero, or negative.
      */
-    public void setPrice(BigDecimal price) throws FieldValidationException {
+    public void setPrice(BigDecimal price){
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
             throw new FieldValidationException("prod.error.3103", new Object[]{price});
         }

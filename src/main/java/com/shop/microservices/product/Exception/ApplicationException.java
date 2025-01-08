@@ -15,7 +15,7 @@ package com.shop.microservices.product.Exception;
  * </ul>
  * </p>
  */
-public class ApplicationException extends Exception {
+public class ApplicationException extends RuntimeException {
     private final String errorCode;
     private final Object[] messageArgs;
 

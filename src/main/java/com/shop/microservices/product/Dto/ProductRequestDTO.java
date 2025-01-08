@@ -68,7 +68,7 @@ public class ProductRequestDTO {
      * @param price The price to set.
      * @throws IllegalArgumentException if the price is less than or equal to 0.
      */
-    public void setPrice(BigDecimal price) throws FieldValidationException {
+    public void setPrice(BigDecimal price){
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
             throw new FieldValidationException("prod.error.3103", new Object[]{price});
         }

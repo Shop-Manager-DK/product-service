@@ -3,6 +3,7 @@ package com.shop.microservices.product.Service.ServiceInterface;
 import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Exception.EntityCreationException;
+import com.shop.microservices.product.Exception.ResourceNotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public interface IProductService {
      *
      * @return A list of ProductResponseDTO objects representing all products.
      */
-    List<ProductResponseDTO> getAllProducts();
+    List<ProductResponseDTO> getAllProducts() throws ResourceNotFoundException;
 
     /**
      * Retrieves a product by its ID.
