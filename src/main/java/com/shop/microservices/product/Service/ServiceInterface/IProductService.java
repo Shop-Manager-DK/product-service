@@ -4,6 +4,7 @@ import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Exception.EntityCreationException;
 import com.shop.microservices.product.Exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,14 +21,18 @@ public interface IProductService {
      * @param productRequest The DTO containing the product data.
      * @return A ProductResponseDTO representing the created product.
      */
-    ProductResponseDTO createProduct(ProductRequestDTO productRequest) throws EntityCreationException;
+    ProductResponseDTO createProduct(ProductRequestDTO productRequest);
 
     /**
-     * Retrieves all products.
+     * Retrieves a paginated list of all products.
      *
-     * @return A list of ProductResponseDTO objects representing all products.
+     * @param page The page number to retrieve (0-based index).
+     * @param size The number of products to include per page.
+     * @return A Page object containing a list of ProductResponseDTO objects for the requested page,
+     *         along with pagination metadata such as total pages and total elements.
      */
-    List<ProductResponseDTO> getAllProducts() throws ResourceNotFoundException;
+    Page<ProductResponseDTO> getAllProducts(int page, int size);
+
 
     /**
      * Retrieves a product by its ID.
