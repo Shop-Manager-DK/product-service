@@ -69,7 +69,7 @@ public class ProductController {
                             content = @io.swagger.v3.oas.annotations.media.Content(schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid pagination parameters")
             })
-    @GetMapping("/products")
+    @GetMapping
     public ResponseEntity<Page<ProductResponseDTO>> getAllProducts(
             @RequestParam(defaultValue = "0") @Parameter(description = "Page number (default is 0)", required = false) int page,
             @RequestParam(defaultValue = "10") @Parameter(description = "Page size (default is 10)", required = false) int size) {
