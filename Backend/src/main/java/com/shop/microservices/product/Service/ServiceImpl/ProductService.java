@@ -13,6 +13,8 @@ import com.shop.microservices.product.Repository.ProductRepository;
 import com.shop.microservices.product.Utils.ProductValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,29 +89,39 @@ public class ProductService implements IProductService {
         }
     }
 
-    @Override
-    public List<ProductResponseDTO> getAllProducts(){
-
+    /**
+     * Retrieves a paginated list of products from the database. Each product is transformed
+     * into a ProductResponseDTO for the response. If no products are found, a
+     * {@link ResourceNotFoundException} is thrown.
+     *
+     * @param page The page number to retrieve (0-based index).
+     * @param size The number of products to include per page.
+     * @return A Page object containing a list of {@link ProductResponseDTO} objects and pagination metadata.
+     * @throws ResourceNotFoundException If no products are found in the database.
+     * @throws EntityCreationException If an error occurs during product retrieval, such as a database issue.
+     */
+    public Page<ProductResponseDTO> getAllProducts(int page, int size) {
         try {
-            List<Product> allProducts = productRepository.findAll();
-            if(allProducts.isEmpty()){
+            // Fetch paginated products
+            Page<Product> productPage = productRepository.findAll(PageRequest.of(page, size));
+
+            if (productPage.isEmpty()) {
                 throw new ResourceNotFoundException("prod.error.3104");
             }
 
-            // Use the mapper to convert each Product to a ProductResponseDTO
-            return allProducts.stream()
-                    .map(productMapper::productToProductResponseDTO)
-                    .toList();
+            // Convert each Product to a ProductResponseDTO and return the page
+            return productPage.map(productMapper::productToProductResponseDTO);
+
         } catch (MongoException ex) {
-            log.error("MongoDB error occurred while retrieving products. Error Message: {}",
-                    ex.getMessage(), ex);
-            throw new EntityCreationException("prod.error.3100", ex);
+            log.error("MongoDB error occurred while retrieving products. Error Message: {}", ex.getMessage(), ex);
+            throw new EntityCreationException("prod.error.3106", ex);
         } catch (Exception ex) {
-            log.error("Unexpected error occurred while retrieving product. Error Message: {}",
-                    ex.getMessage(), ex);
-            throw new EntityCreationException("prod.error.3101", ex);
+            log.error("Unexpected error occurred while retrieving products. Error Message: {}", ex.getMessage(), ex);
+            throw new EntityCreationException("prod.error.3107", ex);
         }
     }
+
+
 
     @Override
     public ProductResponseDTO getProductById(UUID productId) {
