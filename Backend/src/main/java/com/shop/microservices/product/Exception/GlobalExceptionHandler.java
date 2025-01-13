@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
+        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode(), ex.getMessageArgs()));
         response.put("details", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
+        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode(), ex.getMessageArgs()));
         response.put("details", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -108,7 +108,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.NOT_FOUND.value());
-        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
+        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode(), ex.getMessageArgs()));
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -130,7 +130,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode()));
+        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode(), ex.getMessageArgs()));
         response.put("details", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -3,7 +3,9 @@ package com.shop.microservices.product.Mapper;
 import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Model.Product;
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,6 +24,24 @@ public class ProductMapper {
      */
     public ProductMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+    }
+
+    /**
+     * Configures the mapping to handle Product -> ProductResponseDTO mapping for records.
+     */
+    @PostConstruct
+    public void configureMappings() {
+        // Map Product to ProductResponseDTO using the constructor
+        TypeMap<Product, ProductResponseDTO> typeMap = modelMapper.createTypeMap(Product.class, ProductResponseDTO.class);
+        typeMap.setProvider(provision -> {
+            Product source = (Product) provision.getSource();
+            return new ProductResponseDTO(
+                    source.getId(),
+                    source.getName(),
+                    source.getDescription(),
+                    source.getPrice()
+            );
+        });
     }
 
     /**
