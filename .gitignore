@@ -1,27 +1,27 @@
 # Node.js (Frontend)
-node_modules/
-build/
-dist/
-.env
-*.log
+Frontend/node_modules/
+Frontend/build/
+Frontend/dist/
+Frontend/.env
+Frontend/*.log
 
 # React (Frontend)
-*.env
-coverage/
-.cache/
-.DS_Store
+Frontend/*.env
+Frontend/coverage/
+Frontend/.cache/
+Frontend/.DS_Store
 
 # Java (Backend)
-target/
-!/src/main/**/target/
-!/src/test/**/target/
-HELP.md
-.mvn/
-*.class
-*.jar
-*.war
-*.ear
-*.log
+Backend/target/
+Backend/!/src/main/**/target/
+Backend/!/src/test/**/target/
+Backend/HELP.md
+Backend/.mvn/
+Backend/*.class
+Backend/*.jar
+Backend/*.war
+Backend/*.ear
+Backend/*.log
 
 ### IntelliJ IDEA ###
 .idea/
@@ -31,15 +31,15 @@ HELP.md
 .sts4-cache
 
 ### Spring Boot ###
-/build/
-!/src/main/**/build/
-!/src/test/**/build/
+Backend/build/
+Backend/!/src/main/**/build/
+Backend/!/src/test/**/build/
 
 ### Visual Studio Code ###
 .vscode/
 
 # Docker Compose and Data Volumes
-mongo-data/
+Database/mongo_data/
 Backend/data/
 docker-compose.override.yml
 
