@@ -1,0 +1,54 @@
+# Node.js (Frontend)
+node_modules/
+build/
+dist/
+.env
+*.log
+
+# React (Frontend)
+*.env
+coverage/
+.cache/
+.DS_Store
+
+# Java (Backend)
+target/
+!/src/main/**/target/
+!/src/test/**/target/
+HELP.md
+.mvn/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.ipr
+*.iws
+.sts4-cache
+
+### Spring Boot ###
+/build/
+!/src/main/**/build/
+!/src/test/**/build/
+
+### Visual Studio Code ###
+.vscode/
+
+# Docker Compose and Data Volumes
+mongo-data/
+Backend/data/
+docker-compose.override.yml
+
+# OS Generated Files ###
+.DS_Store
+Thumbs.db
+*.swp
+
+# Other ###
+*.bak
+*.tmp
+*.old
