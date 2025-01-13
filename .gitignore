@@ -29,6 +29,11 @@ Backend/*.log
 *.ipr
 *.iws
 .sts4-cache
+Backend/.idea/
+Backend/*.iml
+Backend/*.ipr
+Backend/*.iws
+Backend/.sts4-cache
 
 ### Spring Boot ###
 Backend/build/
