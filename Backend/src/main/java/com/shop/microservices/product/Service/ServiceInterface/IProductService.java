@@ -37,10 +37,10 @@ public interface IProductService {
     /**
      * Retrieves a product by its ID.
      *
-     * @param productId The ID of the product to fetch.
+     * @param productIdStr The ID of the product in String format to fetch.
      * @return A ProductResponseDTO representing the requested product.
      */
-    ProductResponseDTO getProductById(UUID productId);
+    public ProductResponseDTO getProductById(String productIdStr);
 
     /**
      * Updates an existing product.
