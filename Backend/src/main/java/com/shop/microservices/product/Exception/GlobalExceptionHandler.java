@@ -1,5 +1,6 @@
 package com.shop.microservices.product.Exception;
 
+import com.mongodb.MongoException;
 import com.shop.microservices.product.Utils.ErrorMessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -113,6 +114,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Exception handler for {@link InvalidInputException}.
+     * This method captures the exception and constructs a user-friendly error response.
+     *
+     * @param ex The {@link InvalidInputException} thrown when invalid input is provided to the application.
+     * @return A {@link ResponseEntity} containing the error response as a map with relevant details.
+     */
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidInputException(InvalidInputException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("message", errorMessageUtil.getErrorMessage(ex.getErrorCode(), ex.getMessageArgs()));
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
     /**
      * Handles ApplicationException thrown for general application-specific errors.
@@ -190,6 +207,29 @@ public class GlobalExceptionHandler {
                 ));
         response.put("errors", violations);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles exceptions related to MongoDB operations.
+     * <p>
+     * This method catches {@link com.mongodb.MongoException} and returns a standardized error response
+     * to the client with details such as timestamp, HTTP status, a user-friendly error message,
+     * and exception-specific details for debugging purposes.
+     * </p>
+     *
+     * @param ex      the {@link MongoException} instance containing details about the database error.
+     * @param request the {@link WebRequest} during which the exception occurred.
+     * @return a {@link ResponseEntity} containing the error details in a {@link Map} format,
+     *         with an HTTP status code of 500 (Internal Server Error).
+     */
+    @ExceptionHandler(MongoException.class)
+    public ResponseEntity<Map<String, Object>> handleDatabaseException(MongoException ex, WebRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        response.put("message", errorMessageUtil.getErrorMessage("prod.error.3000"));
+        response.put("details", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**

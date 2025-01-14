@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Exception.EntityCreationException;
+import com.shop.microservices.product.Exception.InvalidInputException;
 import com.shop.microservices.product.Exception.ResourceNotFoundException;
 import com.shop.microservices.product.Exception.UniqueConstraintViolationException;
 import com.shop.microservices.product.Mapper.ProductMapper;
@@ -123,12 +124,42 @@ public class ProductService implements IProductService {
         }
     }
 
-
-
+    /**
+     * Retrieves a product by its ID.
+     * <p>
+     * Validates the input product ID, parses it from a string, and fetches the corresponding product.
+     * Throws an exception if the input is invalid or the product is not found.
+     * </p>
+     *
+     * @param productIdStr The product ID as a string (UUID format) received from the client.
+     * @return A {@link ProductResponseDTO} containing the product details.
+     * @throws InvalidInputException      If the input string is null, empty, or not a valid UUID.
+     * @throws ResourceNotFoundException If no product is found for the given UUID.
+     */
     @Override
-    public ProductResponseDTO getProductById(UUID productId) {
-        return null;
+    public ProductResponseDTO getProductById(String productIdStr) {
+        // Validate string input
+        if (productIdStr == null || productIdStr.trim().isEmpty()) {
+            throw new InvalidInputException("prod.error.3108");
+        }
+
+        UUID productId;
+        try {
+            // Attempt to parse the input string into a UUID
+            productId = UUID.fromString(productIdStr);
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidInputException("prod.error.3109"); // Add a new error code for invalid UUID format
+        }
+
+        // Fetch product by ID or throw a custom exception
+        Product retrievedProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("prod.error.3105", productId));
+
+        // Map the product entity to DTO
+        return productMapper.productToProductResponseDTO(retrievedProduct);
     }
+
+
 
     @Override
     public ProductResponseDTO updateProduct(UUID productId, ProductRequestDTO productRequest) {
