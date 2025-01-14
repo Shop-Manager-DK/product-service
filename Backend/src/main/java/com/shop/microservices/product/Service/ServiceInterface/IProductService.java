@@ -45,16 +45,16 @@ public interface IProductService {
     /**
      * Updates an existing product.
      *
-     * @param productId      The ID of the product to update.
+     * @param productIdStr The ID of the product in String format to update.
      * @param productRequest The DTO containing the updated product data.
      * @return A ProductResponseDTO representing the updated product.
      */
-    ProductResponseDTO updateProduct(UUID productId, ProductRequestDTO productRequest);
+    ProductResponseDTO updateProduct(String productIdStr, ProductRequestDTO productRequest);
 
     /**
      * Deletes a product by its ID.
      *
-     * @param productId The ID of the product to delete.
+     * @param productIdStr The ID of the product in String format to delete.
      */
-    void deleteProduct(UUID productId);
+    public void deleteProduct(String productIdStr);
 }

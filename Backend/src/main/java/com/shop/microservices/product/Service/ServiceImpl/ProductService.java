@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,6 +67,11 @@ public class ProductService implements IProductService {
     @Transactional
     public ProductResponseDTO createProduct(@Valid ProductRequestDTO productRequest){
         try {
+            // Validate request payload
+            if (productRequest == null) {
+                throw new InvalidInputException("prod.error.3109");
+            }
+
             // Validate the product request for business rules
             validateProductRequest(productRequest);
 
@@ -148,7 +154,7 @@ public class ProductService implements IProductService {
             // Attempt to parse the input string into a UUID
             productId = UUID.fromString(productIdStr);
         } catch (IllegalArgumentException ex) {
-            throw new InvalidInputException("prod.error.3109"); // Add a new error code for invalid UUID format
+            throw new InvalidInputException("prod.error.3110");
         }
 
         // Fetch product by ID or throw a custom exception
@@ -160,16 +166,102 @@ public class ProductService implements IProductService {
     }
 
 
-
+    /**
+     * Updates an existing product with new details.
+     * <p>
+     * Validates the input product ID and request payload. If the product exists, it is updated
+     * with the provided details. Throws exceptions for invalid input or if the product is not found.
+     * </p>
+     *
+     * @param productIdStr      The UUID of the product to update.
+     * @param productRequest The {@link ProductRequestDTO} containing the updated product details.
+     * @return A {@link ProductResponseDTO} with the updated product details.
+     * @throws InvalidInputException      If the input product ID or request payload is invalid.
+     * @throws ResourceNotFoundException If the product with the given ID does not exist.
+     */
     @Override
-    public ProductResponseDTO updateProduct(UUID productId, ProductRequestDTO productRequest) {
-        return null;
+    public ProductResponseDTO updateProduct(String productIdStr, ProductRequestDTO productRequest) {
+        // Validate string input
+        if (productIdStr == null || productIdStr.trim().isEmpty()) {
+            throw new InvalidInputException("prod.error.3108");
+        }
+
+        UUID productId;
+        try {
+            // Attempt to parse the input string into a UUID
+            productId = UUID.fromString(productIdStr);
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidInputException("prod.error.3110");
+        }
+
+        // Validate request payload
+        if (productRequest == null) {
+            throw new InvalidInputException("prod.error.3109");
+        }
+
+        // Fetch the existing product by ID or throw a ResourceNotFoundException
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("prod.error.3105", productId));
+
+        // Update product details
+        if (productRequest.getName() != null && !productRequest.getName().isBlank()) {
+            existingProduct.setName(productRequest.getName());
+        }
+        if (productRequest.getDescription() != null) {
+            existingProduct.setDescription(productRequest.getDescription());
+        }
+        if (productRequest.getPrice() != null && productRequest.getPrice().compareTo(BigDecimal.ZERO) > 0) {
+            existingProduct.setPrice(productRequest.getPrice());
+        }
+        // Save the updated product to the database
+        Product updatedProduct = productRepository.save(existingProduct);
+
+        // Map the updated product entity to a response DTO
+        return productMapper.productToProductResponseDTO(updatedProduct);
     }
 
+
+    /**
+     * Deletes a product from the database by its unique ID.
+     * <p>
+     * This method validates the provided product ID, checks if the product exists in the database,
+     * and deletes it. If the product is not found, a {@link ResourceNotFoundException} will be thrown.
+     * If the input is invalid (i.e., null), an {@link InvalidInputException} will be thrown.
+     * Any errors that occur during the deletion process are handled by the global exception handler.
+     * </p>
+     *
+     * @param productIdStr The unique identifier (String) of the product to be deleted.
+     * @throws InvalidInputException      If the product ID is null or invalid.
+     * @throws ResourceNotFoundException If no product is found for the given ID.
+     * @throws MongoException             If an error occurs during the deletion process, it will be handled globally.
+     */
     @Override
-    public void deleteProduct(UUID productId) {
-        // Implement deletion logic
+    public void deleteProduct(String productIdStr) {
+
+        // Validate string input
+        if (productIdStr == null || productIdStr.trim().isEmpty()) {
+            throw new InvalidInputException("prod.error.3108");
+        }
+
+        UUID productId;
+        try {
+            // Attempt to parse the input string into a UUID
+            productId = UUID.fromString(productIdStr);
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidInputException("prod.error.3110");
+        }
+
+        // Fetch the product by ID. If the product does not exist, a ResourceNotFoundException will be thrown globally.
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("prod.error.3105", productId));
+
+        // Delete the product from the database.
+        productRepository.delete(existingProduct);
+
+        // Log the successful deletion of the product for audit and tracking purposes.
+        log.info("Product with ID: {} successfully deleted", productId);
     }
+
 
     /**
      * Validates the product request to ensure the product name is unique.
