@@ -4,6 +4,8 @@ import com.shop.microservices.product.Dto.ProductRequestDTO;
 import com.shop.microservices.product.Dto.ProductResponseDTO;
 import com.shop.microservices.product.Exception.EntityCreationException;
 import com.shop.microservices.product.Service.ServiceInterface.IProductService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,14 +45,41 @@ public class ProductController {
     @Operation(summary = "Create a new product", description = "Creates a new product in the system",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Product created successfully",
-                            content = @io.swagger.v3.oas.annotations.media.Content(schema = @Schema(implementation = ProductResponseDTO.class))),
+                            content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid product data")
             })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody @Parameter(description = "Product data to be created", required = true) ProductRequestDTO productRequest) {
+    public ResponseEntity<ProductResponseDTO> createProduct(
+            @RequestBody @Parameter(description = "Product data to be created", required = true) ProductRequestDTO productRequest) {
         // Call the service layer to create a product and return a successful response
         return ResponseEntity.ok(productService.createProduct(productRequest));
+    }
+
+    /**
+     * Update the new product based on the provided product data and product ID.
+     *
+     * <p>This endpoint accepts a {@link ProductRequestDTO} containing the product details and Product ID,
+     * validates and processes the request, and returns the updated product in {@link ProductResponseDTO} format.</p>
+     *
+     * @param productRequestDTO The product data from the client in {@link ProductRequestDTO} format.
+     * @param productId The product ID of the product that need to update.
+     * @return A {@link ResponseEntity} containing the created product as {@link ProductResponseDTO}.
+     */
+    @Operation(summary = "Update the new product", description = "Update the new product based on the provided product data and product ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Product updated successfully",
+                            content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid product data")
+            })
+    @PutMapping("{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ProductResponseDTO> updateProduct(
+            @PathVariable @Parameter(description = "Product id of the product needed to updated", required = true) String productId,
+            @RequestBody @Parameter(description = "Product details that need to update") ProductRequestDTO productRequestDTO){
+
+        // Call the update service to update the product and return updated product
+        return ResponseEntity.ok(productService.updateProduct(productId, productRequestDTO));
     }
 
     /**
@@ -66,10 +95,11 @@ public class ProductController {
     @Operation(summary = "Retrieve paginated products", description = "Fetches products with pagination support",
             responses = {
                     @ApiResponse(responseCode = "200", description = "List of products",
-                            content = @io.swagger.v3.oas.annotations.media.Content(schema = @Schema(implementation = ProductResponseDTO.class))),
+                            content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid pagination parameters")
             })
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Page<ProductResponseDTO>> getAllProducts(
             @RequestParam(defaultValue = "0") @Parameter(description = "Page number (default is 0)", required = false) int page,
             @RequestParam(defaultValue = "10") @Parameter(description = "Page size (default is 10)", required = false) int size) {
@@ -80,4 +110,32 @@ public class ProductController {
         // Return the paginated result wrapped in ResponseEntity
         return ResponseEntity.ok(products);
     }
+
+    /**
+     * Retrieve the product details based on the provided product ID.
+     *
+     * <p>This endpoint fetches a products  based on the provided product ID.</p>
+     *
+     * @param productId The ID of the product that need to retrieve
+     * @return A {@link ResponseEntity}  of a {@link ProductResponseDTO} objects.
+     */
+    @Operation(
+            summary = "Get product by ID",
+            description = "Retrieve the product details based on the provided product ID."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the product",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found")
+    })
+    @GetMapping("{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ProductResponseDTO> getProductById(
+            @Parameter(description = "The ID of the product to retrieve", required = true)
+            @PathVariable String productId) {
+        // Return the product based on provided product id
+        return ResponseEntity.ok(productService.getProductById(productId));
+    }
+
+
 }

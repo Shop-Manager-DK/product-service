@@ -165,6 +165,32 @@ public class ProductService implements IProductService {
         return productMapper.productToProductResponseDTO(retrievedProduct);
     }
 
+    /**
+     * Retrieves a product by its name.
+     * <p>
+     * Validates the input product name, and fetches the corresponding product by matching the name.
+     * Throws an exception if the input is invalid or the product is not found.
+     * </p>
+     *
+     * @param productName The product name received from the client.
+     * @return A {@link ProductResponseDTO} containing the product details.
+     * @throws InvalidInputException      If the input string is null, empty, or contains invalid characters.
+     * @throws ResourceNotFoundException If no product is found for the given name.
+     */
+    @Override
+    public ProductResponseDTO getProductByName(String productName) {
+        // Validate string input
+        if (productName == null || productName.trim().isEmpty()) {
+            throw new InvalidInputException("prod.error.3108"); // Invalid input: Empty or null product name
+        }
+
+        // Fetch product by name or throw a custom exception if not found
+        Product retrievedProduct = productRepository.findByName(productName);
+
+        // Map the product entity to DTO
+        return productMapper.productToProductResponseDTO(retrievedProduct);
+    }
+
 
     /**
      * Updates an existing product with new details.

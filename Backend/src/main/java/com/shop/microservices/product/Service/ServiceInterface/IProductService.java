@@ -43,6 +43,14 @@ public interface IProductService {
     public ProductResponseDTO getProductById(String productIdStr);
 
     /**
+     * Retrieves a product by its ID.
+     *
+     * @param productName The name of the product to fetch.
+     * @return A ProductResponseDTO representing the requested product.
+     */
+    public ProductResponseDTO getProductByName(String productName);
+
+    /**
      * Updates an existing product.
      *
      * @param productIdStr The ID of the product in String format to update.
