@@ -4,7 +4,6 @@ import com.shop.microservices.product.Model.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.lang.ScopedValue;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
