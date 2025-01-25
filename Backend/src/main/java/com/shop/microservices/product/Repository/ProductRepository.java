@@ -4,7 +4,6 @@ import com.shop.microservices.product.Model.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.lang.ScopedValue;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -43,13 +42,13 @@ public interface ProductRepository extends MongoRepository<Product, UUID> {
     boolean existsByName(String name);
 
     /**
-     * Finds all products that contain the specified name.
+     * Finds the product that contain the specified name.
      * This method generates a query based on the method name and the provided {@code name} parameter.
-     * It returns a list of products that match the given partial or full product name.
+     * It returns the product that match the given full product name.
      *
-     * @param productName The name (or part of the name) of the product to search for.
-     * @return A list of {@link Product} objects containing the specified name.
-     *         The list may be empty if no products match the name.
+     * @param productName The name of the product to search for.
+     * @return A  {@link Product} object containing the specified name.
+     *         The object may be empty if no product match the name.
      */
     Product findByName(String productName);
 }

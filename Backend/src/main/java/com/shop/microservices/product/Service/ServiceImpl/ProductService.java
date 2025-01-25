@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -85,8 +84,6 @@ public class ProductService implements IProductService {
             // Map the saved product back to a DTO and return it
             return productMapper.productToProductResponseDTO(savedProduct);
 
-        } catch (UniqueConstraintViolationException ex) {
-            throw ex;
         } catch (MongoException ex) {
             log.error("MongoDB error occurred while creating product. Error Message: {}, Product Request: {}",
                     ex.getMessage(), productRequest, ex);
@@ -94,7 +91,7 @@ public class ProductService implements IProductService {
         } catch (Exception ex) {
             log.error("Unexpected error occurred while creating product. Error Message: {}, Product Request: {}",
                     ex.getMessage(), productRequest, ex);
-            throw new EntityCreationException("prod.error.3101", ex);
+            throw new EntityCreationException("prod.error.3001", ex);
         }
     }
 
@@ -296,7 +293,7 @@ public class ProductService implements IProductService {
      * @param productRequestDTO The {@link ProductRequestDTO} containing the product details, including the name.
      * @throws UniqueConstraintViolationException If the product name is not unique, with the error code "prod.error.3102" and the field "name".
      */
-    public void validateProductRequest(ProductRequestDTO productRequestDTO){
+    private void validateProductRequest(ProductRequestDTO productRequestDTO){
         if (!productValidationUtil.isProductNameUnique(productRequestDTO.getName())) {
             throw new UniqueConstraintViolationException("prod.error.3102", "name", productRequestDTO.getName());
         }

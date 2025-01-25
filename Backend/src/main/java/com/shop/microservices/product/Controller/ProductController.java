@@ -19,6 +19,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.Map;
+
 /**
  * Controller to manage product-related operations such as creating and retrieving products.
  *
@@ -137,5 +139,34 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
+    /**
+     * Deletes a product by its ID.
+     * <p>
+     * Validates the product ID string input, converts it to a UUID, and deletes the product
+     * from the database if it exists. Throws appropriate exceptions for invalid input or if
+     * the product is not found.
+     * </p>
+     *
+     * @param productId The ID of the product to be deleted, as a string.
+     * @return A {@link ResponseEntity} containing a confirmation message upon successful deletion.
+     */
+    @Operation(
+            summary = "Delete a product",
+            description = "Deletes a product by its ID. Validates the input and ensures the product exists in the database.",
+            tags = {"Product Controller"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Product successfully deleted"),
+            @ApiResponse(responseCode = "404", description = "Product not found",
+                    content = @Content(schema = @Schema(implementation = Map.class)))
+    })
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable String productId) {
+        // Delegate the deletion logic to the service layer
+        productService.deleteProduct(productId);
+
+        // Return a confirmation response
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("message", "Product successfully deleted"));
+    }
 
 }
