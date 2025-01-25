@@ -31,7 +31,7 @@ public class Material {
      * The name must not be blank.
      */
     @NotBlank(message = "Material name must not be blank")
-    private String name;
+    private String materialName;
 
     /**
      * The Type of the material.

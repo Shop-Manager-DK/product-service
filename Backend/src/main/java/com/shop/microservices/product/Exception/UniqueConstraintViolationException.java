@@ -50,4 +50,14 @@ public class UniqueConstraintViolationException extends ApplicationException {
     public UniqueConstraintViolationException(String errorCode, String fieldName, double value) {
         super(errorCode, new Object[]{value, fieldName});
     }
+
+    /**
+     * Constructor for UniqueConstraintViolationException with String array value type.
+     *
+     * @param errorCode  The error code to be used for this exception.
+     * @param values     The string array value that violated the unique constraint.
+     */
+    public UniqueConstraintViolationException(String errorCode, String[] values) {
+        super(errorCode, new Object[]{values});
+    }
 }
