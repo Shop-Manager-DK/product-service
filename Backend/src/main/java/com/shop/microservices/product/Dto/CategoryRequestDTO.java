@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 public class CategoryRequestDTO {
 
     /**
-     * The name of the product.
+     * The name of the Category.
      * The name must not be blank and is required for creating or updating a Category.
      * -- GETTER --
      *  Gets the name of the Category.
