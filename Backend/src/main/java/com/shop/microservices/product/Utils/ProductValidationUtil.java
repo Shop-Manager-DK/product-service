@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * Utility class for validating product-related data, particularly focusing on ensuring
- * the uniqueness of product names before performing CRUD operations.
  * This class provides utility methods used during product creation or modification.
  */
 @Component
@@ -18,7 +17,7 @@ public class ProductValidationUtil {
      * Constructor for initializing the ProductRequestValidationUtil.
      * The repository is injected here to allow validation checks to query the product data store.
      *
-     * @param productRepository The repository used to query the database for existing products.
+     * @param productRepository The repository used to query the database for products related data.
      */
     public ProductValidationUtil(ProductRepository productRepository) {
         this.productRepository = productRepository;

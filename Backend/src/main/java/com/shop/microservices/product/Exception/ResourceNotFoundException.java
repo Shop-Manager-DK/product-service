@@ -30,5 +30,17 @@ public class ResourceNotFoundException extends ApplicationException {
     public ResourceNotFoundException(String errorCode, UUID id) {
         super(errorCode, new Object[]{id});
     }
+
+    /**
+     * Constructor to create a {@link ResourceNotFoundException} with an error code
+     * and the name of the resource that was not found.
+     * This allows the error to include specific information about the missing resource.
+     *
+     * @param errorCode The error code representing the type of resource not found.
+     * @param name        The name of the resource that could not be found.
+     */
+    public ResourceNotFoundException(String errorCode, String name) {
+        super(errorCode, new Object[]{name});
+    }
 }
 
